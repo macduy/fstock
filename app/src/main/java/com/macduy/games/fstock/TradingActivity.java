@@ -1,11 +1,9 @@
 package com.macduy.games.fstock;
 
 import android.animation.TimeAnimator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -33,8 +31,7 @@ public class TradingActivity extends Activity {
     private Button mBuyButton;
     private Button mSellButton;
 
-    private float mCurrentMoney = STARTING_MONEY;
-    private int mTrades = 0;
+    private GameState mCurrentGame;
     private float mHighScore;
 
 
@@ -82,6 +79,9 @@ public class TradingActivity extends Activity {
             }
         });
 
+        // Create game
+        mCurrentGame = new GameState();
+        mCurrentGame.setCurrentMoney(STARTING_MONEY);
         mStockPrice.reset(400);
 
         mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice);
@@ -116,26 +116,25 @@ public class TradingActivity extends Activity {
         mStockPriceDrawable.invalidateSelf();
         mCurrentPriceView.setText(String.format("£%.2f", price));
 
-        float portfolioValue = mCurrentMoney + mTrades * mStockPrice.getLatest();
+        // Update portoflio view.
+        float portfolioValue = mCurrentGame.getPortfolioValue(mStockPrice);
         mPortfolioValueView.setText(String.format("(£%.2f)", portfolioValue));
     }
 
     public void onBuy(View view) {
-        if (mStockPrice.getLatest() < mCurrentMoney) {
-            mCurrentMoney -= mStockPrice.getLatest();
-            mTrades++;
+        if (mCurrentGame.maybeBuy(mStockPrice)) {
+            updateCurrentMoneyView();
         }
-        updateCurrentMoneyView();
     }
 
     public void onSell(View view) {
-        mCurrentMoney += mStockPrice.getLatest();
-        mTrades--;
-        updateCurrentMoneyView();
+        if (mCurrentGame.maybeSell(mStockPrice)) {
+            updateCurrentMoneyView();
+        }
     }
 
     private void updateCurrentMoneyView() {
-        float performance = (mCurrentMoney - STARTING_MONEY) / STARTING_MONEY;
+        float performance = (mCurrentGame.getCurrentMoney() - STARTING_MONEY) / STARTING_MONEY;
 
         int color;
         String prefix = "";
@@ -147,7 +146,7 @@ public class TradingActivity extends Activity {
             color = Color.rgb(180, 20, 20);
         }
 
-        String rating = "";
+        String rating;
         if (performance > 0.5) {
              rating = "Fuck! Are you a banker?";
         } else if (performance > 0.2) {
@@ -165,14 +164,14 @@ public class TradingActivity extends Activity {
         mPerformanceView.setTextColor(color);
         mPerformanceView.setText(prefix + performanceString);
         mRatingView.setText(rating);
-        mCurrentMoneyView.setText(String.format("£%.2f", mCurrentMoney));
+        mCurrentMoneyView.setText(String.format("£%.2f", mCurrentGame.getCurrentMoney()));
 
         // update buttons
-        mSellButton.setEnabled(mTrades > 0);
-        mBuyButton.setEnabled(mTrades <= 10);
+        mSellButton.setEnabled(mCurrentGame.hasTrades());
+        mBuyButton.setEnabled(mCurrentGame.getTrades() <= 10);
 
-        if (mTrades > 0) {
-            mSellButton.setText("Sell (" + mTrades + ")");
+        if (mCurrentGame.hasTrades()) {
+            mSellButton.setText("Sell (" + mCurrentGame.getTrades() + ")");
         } else {
             mSellButton.setText("Sell");
         }
@@ -202,8 +201,8 @@ public class TradingActivity extends Activity {
             mCurrentMoneyView.animate().scaleX(2f).scaleY(2f);
 
             // Commit highscore.
-            if (mCurrentMoney > mHighScore) {
-                mHighScore = mCurrentMoney;
+            if (mCurrentGame.getCurrentMoney() > mHighScore) {
+                mHighScore = mCurrentGame.getCurrentMoney();
                 SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
                 editor.putFloat("highscore", mHighScore);
                 editor.commit();
