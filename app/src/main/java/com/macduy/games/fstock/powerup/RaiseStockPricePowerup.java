@@ -13,7 +13,7 @@ public class RaiseStockPricePowerup implements Powerup {
 
     @Override
     public void apply(StockPrice stock) {
-        // Raise the price by 100%.
+        // Raise the price.
         stock.pushPrice(stock.getLatest() * 2f);
     }
 }

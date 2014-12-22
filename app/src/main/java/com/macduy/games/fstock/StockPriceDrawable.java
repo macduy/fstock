@@ -2,7 +2,6 @@ package com.macduy.games.fstock;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -10,7 +9,13 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import com.macduy.games.fstock.graph.Range;
+import com.macduy.games.fstock.graph.RangeMapper;
+
 public class StockPriceDrawable extends Drawable {
+    private final Range mVBoundsRange;
+    private final RangeMapper mYMapper;
+
     private StockPrice mStockPrice;
     private Paint mPaint = new Paint();
     private Paint mFillPaint = new Paint();
@@ -20,12 +25,26 @@ public class StockPriceDrawable extends Drawable {
 
     private float mOffset;
 
-    public StockPriceDrawable(Resources resources, StockPrice stockPrice) {
+    public StockPriceDrawable(Resources resources, StockPrice stockPrice, Range yRange) {
         mStockPrice = stockPrice;
         mPaint.setAntiAlias(true);
         mPaint.setColor(resources.getColor(R.color.graphEdge));
         mPaint.setStrokeWidth(6f);
         mPaint.setStyle(Paint.Style.STROKE);
+
+        mVBoundsRange = new Range() {
+            @Override
+            public float start() {
+                return getBounds().bottom;
+            }
+
+            @Override
+            public float end() {
+                return getBounds().top;
+            }
+        };
+
+        mYMapper = new RangeMapper(yRange, mVBoundsRange);
 
         mFillPaint.setAntiAlias(true);
         mFillPaint.setColor(resources.getColor(R.color.graphFill));
@@ -51,7 +70,7 @@ public class StockPriceDrawable extends Drawable {
         float x, y = 0;
         for (float price : mStockPrice) {
             x = ((float)i + mOffset) * step;
-            y = b.bottom - price;
+            y = mYMapper.get(price);
 
             if (i == 0) {
                 mPath.moveTo(b.left, y);

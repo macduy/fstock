@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.macduy.games.fstock.graph.MinimumSpanRange;
 import com.macduy.games.fstock.powerup.Powerup;
 import com.macduy.games.fstock.powerup.RaiseStockPricePowerup;
 
@@ -22,9 +23,11 @@ public class TradingActivity extends Activity {
     private static final int UPDATE_MS = 64;
     private static final float STARTING_MONEY = 2500;
     private static final float STOP_TIME = 30 * 1000;
+    private static final float MINIMUM_Y_AXIS_SPAN = 50;
 
     private final StockPrice mStockPrice;
     private final TimeAnimator mAnimator;
+    private final MinimumSpanRange mRange;
 
     private ViewGroup mContainer;
     private TextView mCurrentPriceView;
@@ -52,6 +55,7 @@ public class TradingActivity extends Activity {
         mAnimator.setRepeatCount(TimeAnimator.INFINITE);
         mAnimator.setRepeatMode(TimeAnimator.RESTART);
         mAnimator.setDuration(1000);
+        mRange = new MinimumSpanRange(MINIMUM_Y_AXIS_SPAN);
 
         mStockPrice = new StockPrice();
     }
@@ -108,7 +112,8 @@ public class TradingActivity extends Activity {
         mPowerupViewController =
                 new PowerupRecyclerViewController(mPowerupsView, mPowerups, mStockPrice);
 
-        mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice);
+        // Create graph.
+        mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice, mRange);
         graph.setBackground(mStockPriceDrawable);
 
         updateCurrentMoneyView();
@@ -130,12 +135,27 @@ public class TradingActivity extends Activity {
         mAnimator.cancel();
     }
 
+    /**
+     * Updates the stock price. Probably also needs to be renamed.
+     */
     protected void onTradeUpdate() {
         // Generate random price.
         float price = mStockPrice.getLatest();
         float delta = ((float) Math.random() - 0.5f) * Math.min(0.5f * price, (float) (Math.pow(Math.random(), 5f) * 80f) + 15f);
         price += delta;
         mStockPrice.pushPrice(price);
+
+        // Update range.
+        float min = price;
+        float max = price;
+        for (float p : mStockPrice) {
+            if (p < min) {
+                min = p;
+            } else if (p > max) {
+                max = p;
+            }
+        }
+        mRange.set(min, max);
 
         mStockPriceDrawable.invalidateSelf();
         mCurrentPriceView.setText(String.format("£%.2f", price));
