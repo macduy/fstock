@@ -12,6 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.macduy.games.fstock.powerup.Powerup;
+import com.macduy.games.fstock.powerup.RaiseStockPricePowerup;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TradingActivity extends Activity {
     private static final int UPDATE_MS = 64;
     private static final float STARTING_MONEY = 2500;
@@ -29,11 +35,13 @@ public class TradingActivity extends Activity {
     private TextView mTimeRemainingView;
     private TextView mHighScoreView;
     private RecyclerView mHoldingsView;
+    private RecyclerView mPowerupsView;
     private StockPriceDrawable mStockPriceDrawable;
     private Button mBuyButton;
     private Button mSellButton;
 
-    private HoldingsRecyclerViewController mRecyclerViewController;
+    private HoldingsRecyclerViewController mHoldingsViewController;
+    private PowerupRecyclerViewController mPowerupViewController;
 
     private GameState mCurrentGame;
     private float mHighScore;
@@ -64,6 +72,7 @@ public class TradingActivity extends Activity {
         mTimeRemainingView = (TextView) findViewById(R.id.time_remaining);
         mHighScoreView = (TextView) findViewById(R.id.highscore);
         mHoldingsView = (RecyclerView) findViewById(R.id.holdings);
+        mPowerupsView = (RecyclerView) findViewById(R.id.powerups);
         View graph = findViewById(R.id.graph);
 
         // Update high score.
@@ -89,9 +98,15 @@ public class TradingActivity extends Activity {
         mCurrentGame.setCurrentMoney(STARTING_MONEY);
         mStockPrice.reset(400);
 
+        // Powerups.
+        List<Powerup> mPowerups = new ArrayList<>();
+        mPowerups.add(new RaiseStockPricePowerup());
+
         // Create view controllers.
-        mRecyclerViewController =
+        mHoldingsViewController =
                 new HoldingsRecyclerViewController(mHoldingsView, mCurrentGame.getHoldings());
+        mPowerupViewController =
+                new PowerupRecyclerViewController(mPowerupsView, mPowerups, mStockPrice);
 
         mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice);
         graph.setBackground(mStockPriceDrawable);
@@ -147,7 +162,7 @@ public class TradingActivity extends Activity {
      * Should also probably be renamed.
      */
     private void updateCurrentMoneyView() {
-        mRecyclerViewController.notifyDataSetChanged();
+        mHoldingsViewController.notifyDataSetChanged();
 
         float performance = (mCurrentGame.getCurrentMoney() - STARTING_MONEY) / STARTING_MONEY;
 
@@ -163,7 +178,7 @@ public class TradingActivity extends Activity {
 
         String rating;
         if (performance > 0.5) {
-             rating = "Fuck! Are you a banker?";
+             rating = "Whoa! Are you a banker?";
         } else if (performance > 0.2) {
             rating = "Damn! NICE!!";
         } else if (performance > 0.05) {
@@ -173,7 +188,7 @@ public class TradingActivity extends Activity {
         } else if (performance > -0.3) {
             rating = "You suck at this.";
         } else {
-            rating = "Wow, you're crap!";
+            rating = "Wow, you're bad!";
         }
 
         mPerformanceView.setTextColor(color);
