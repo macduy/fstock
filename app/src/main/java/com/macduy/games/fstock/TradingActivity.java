@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,6 +28,7 @@ public class TradingActivity extends Activity {
     private TextView mPortfolioValueView;
     private TextView mTimeRemainingView;
     private TextView mHighScoreView;
+    private RecyclerView mHoldingsView;
     private StockPriceDrawable mStockPriceDrawable;
     private Button mBuyButton;
     private Button mSellButton;
@@ -59,6 +61,7 @@ public class TradingActivity extends Activity {
         mSellButton = (Button) findViewById(R.id.sell);
         mTimeRemainingView = (TextView) findViewById(R.id.time_remaining);
         mHighScoreView = (TextView) findViewById(R.id.highscore);
+        mHoldingsView = (RecyclerView) findViewById(R.id.holdings);
         View graph = findViewById(R.id.graph);
 
         // Update high score.
@@ -83,6 +86,11 @@ public class TradingActivity extends Activity {
         mCurrentGame = new GameState();
         mCurrentGame.setCurrentMoney(STARTING_MONEY);
         mStockPrice.reset(400);
+
+        // Create view controllers.
+        @SuppressWarnings("unused")
+        HoldingsRecyclerViewController holdingsController =
+                new HoldingsRecyclerViewController(mHoldingsView, mCurrentGame.getHoldings());
 
         mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice);
         graph.setBackground(mStockPriceDrawable);

@@ -1,11 +1,15 @@
 package com.macduy.games.fstock;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Model/Controller for a single game
  */
 public class GameState {
     private float mCurrentMoney;
     private int mTrades;
+    private List<Holding> mHoldings = new LinkedList<>();
 
     public GameState() {
     }
@@ -13,7 +17,6 @@ public class GameState {
     public void setCurrentMoney(float money) {
         mCurrentMoney = money;
     }
-
 
     public float getCurrentMoney() {
         return mCurrentMoney;
@@ -25,6 +28,10 @@ public class GameState {
 
     public boolean hasTrades() {
         return getTrades() > 0;
+    }
+
+    public List<Holding> getHoldings() {
+        return mHoldings;
     }
 
     // Controller-y methods.
