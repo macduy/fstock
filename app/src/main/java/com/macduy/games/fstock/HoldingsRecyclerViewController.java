@@ -15,17 +15,25 @@ import java.util.List;
 public class HoldingsRecyclerViewController {
     private final Context mContext;
     private final RecyclerView mView;
-    private final RecyclerView.LayoutManager mLayoutManager;
+    private final LinearLayoutManager mLayoutManager;
     private final RecyclerView.Adapter mAdapter;
 
     public HoldingsRecyclerViewController(RecyclerView view, List<Holding> holdings) {
         mContext = view.getContext();
         mView = view;
-        mView.setHasFixedSize(true);
 
+        // Set up layout manager.
         mLayoutManager = new LinearLayoutManager(mContext);
+        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mView.setLayoutManager(mLayoutManager);
 
+        // Set up adapter.
         mAdapter = new HoldingsViewAdapter(holdings);
+        mView.setAdapter(mAdapter);
+    }
+
+    public void notifyDataSetChanged() {
+        mAdapter.notifyDataSetChanged();
     }
 
     class HoldingsViewAdapter extends RecyclerView.Adapter<HoldingsViewViewHolder> {

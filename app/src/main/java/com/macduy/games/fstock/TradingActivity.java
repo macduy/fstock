@@ -33,6 +33,8 @@ public class TradingActivity extends Activity {
     private Button mBuyButton;
     private Button mSellButton;
 
+    private HoldingsRecyclerViewController mRecyclerViewController;
+
     private GameState mCurrentGame;
     private float mHighScore;
 
@@ -88,8 +90,7 @@ public class TradingActivity extends Activity {
         mStockPrice.reset(400);
 
         // Create view controllers.
-        @SuppressWarnings("unused")
-        HoldingsRecyclerViewController holdingsController =
+        mRecyclerViewController =
                 new HoldingsRecyclerViewController(mHoldingsView, mCurrentGame.getHoldings());
 
         mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice);
@@ -141,7 +142,13 @@ public class TradingActivity extends Activity {
         }
     }
 
+    /**
+     * Updates probably everything due to a trade being made.
+     * Should also probably be renamed.
+     */
     private void updateCurrentMoneyView() {
+        mRecyclerViewController.notifyDataSetChanged();
+
         float performance = (mCurrentGame.getCurrentMoney() - STARTING_MONEY) / STARTING_MONEY;
 
         int color;

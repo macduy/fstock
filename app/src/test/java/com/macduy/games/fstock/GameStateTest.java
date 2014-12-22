@@ -8,8 +8,9 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
@@ -56,11 +57,6 @@ public class GameStateTest {
 
         assertFalse(mState.hasTrades());
         assertEquals(0, mState.getTrades());
-    }
-
-    @Test
-    public void fail() {
-        assertTrue(true);
     }
 
 }

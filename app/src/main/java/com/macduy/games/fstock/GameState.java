@@ -8,7 +8,6 @@ import java.util.List;
  */
 public class GameState {
     private float mCurrentMoney;
-    private int mTrades;
     private List<Holding> mHoldings = new LinkedList<>();
 
     public GameState() {
@@ -23,7 +22,7 @@ public class GameState {
     }
 
     public int getTrades() {
-        return mTrades;
+        return mHoldings.size();
     }
 
     public boolean hasTrades() {
@@ -44,7 +43,7 @@ public class GameState {
         float price = stock.getLatest();
         if (mCurrentMoney > price) {
             mCurrentMoney -= price;
-            mTrades++;
+            mHoldings.add(new Holding(stock));
             return true;
         }
         return false;
@@ -57,7 +56,7 @@ public class GameState {
     public boolean maybeSell(StockPrice stock) {
         if (hasTrades()) {
             mCurrentMoney += stock.getLatest();
-            mTrades--;
+            mHoldings.remove(0);
             return true;
         }
         return false;
@@ -67,6 +66,6 @@ public class GameState {
      * @return The current portfolio value given current trades and stock price.
      */
     public float getPortfolioValue(StockPrice stock) {
-        return mCurrentMoney + mTrades * stock.getLatest();
+        return mCurrentMoney + getTrades() * stock.getLatest();
     }
 }

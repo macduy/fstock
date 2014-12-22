@@ -90,7 +90,9 @@
     <!-- Current holdings -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/holdings"
-
+        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
         />
 
     <!-- Monetary summaries -->
