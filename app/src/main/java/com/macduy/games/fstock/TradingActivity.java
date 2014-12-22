@@ -27,6 +27,7 @@ public class TradingActivity extends Activity {
 
     private final StockPrice mStockPrice;
     private final TimeAnimator mAnimator;
+    private final List<Powerup> mPowerups = new ArrayList<>();
     private final MinimumSpanRange mRange;
 
     private ViewGroup mContainer;
@@ -49,6 +50,26 @@ public class TradingActivity extends Activity {
     private GameState mCurrentGame;
     private float mHighScore;
 
+    private Powerup.Applicator mPowerupApplicator = new Powerup.Applicator() {
+        @Override
+        public GameState getGameState() {
+            return mCurrentGame;
+        }
+
+        @Override
+        public StockPrice getStockPrice() {
+            return mStockPrice;
+        }
+    };
+
+    private PowerupRecyclerViewController.Listener mPowerupSelectedListener = new
+            PowerupRecyclerViewController.Listener() {
+                @Override
+                public void onPowerupSelected(Powerup powerup) {
+                    powerup.apply(mPowerupApplicator);
+                    mPowerups.remove(powerup);
+                }
+            };
 
     public TradingActivity() {
         mAnimator = new TimeAnimator();
@@ -103,14 +124,13 @@ public class TradingActivity extends Activity {
         mStockPrice.reset(400);
 
         // Powerups.
-        List<Powerup> mPowerups = new ArrayList<>();
         mPowerups.add(new RaiseStockPricePowerup());
 
         // Create view controllers.
-        mHoldingsViewController =
-                new HoldingsRecyclerViewController(mHoldingsView, mCurrentGame.getHoldings());
-        mPowerupViewController =
-                new PowerupRecyclerViewController(mPowerupsView, mPowerups, mStockPrice);
+        mHoldingsViewController = new HoldingsRecyclerViewController(
+                mHoldingsView, mCurrentGame.getHoldings());
+        mPowerupViewController = new PowerupRecyclerViewController(
+                mPowerupsView, mPowerups, mPowerupSelectedListener);
 
         // Create graph.
         mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice, mRange);

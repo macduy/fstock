@@ -20,12 +20,13 @@ public class PowerupRecyclerViewController {
     private final RecyclerView mView;
     private final LinearLayoutManager mLayoutManager;
     private final RecyclerView.Adapter mAdapter;
-    private final StockPrice mStock;
+    private final Listener mListener;
 
-    public PowerupRecyclerViewController(RecyclerView view, List<Powerup> powerups, StockPrice stock) {
+    public PowerupRecyclerViewController(RecyclerView view, List<Powerup> powerups,
+            Listener listener) {
         mContext = view.getContext();
         mView = view;
-        mStock = stock;
+        mListener = listener;
 
         // Set up layout manager.
         mLayoutManager = new LinearLayoutManager(mContext);
@@ -61,8 +62,7 @@ public class PowerupRecyclerViewController {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    powerup.apply(mStock);
-                    mPowerups.remove(0);
+                    mListener.onPowerupSelected(powerup);
                     notifyDataSetChanged();
                 }
             });
@@ -81,5 +81,9 @@ public class PowerupRecyclerViewController {
             super(view);
             mView = view;
         }
+    }
+
+    public interface Listener {
+        void onPowerupSelected(Powerup powerup);
     }
 }
