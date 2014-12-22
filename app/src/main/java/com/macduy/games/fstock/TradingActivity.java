@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.macduy.games.fstock.graph.MinimumSpanRange;
+import com.macduy.games.fstock.powerup.CashInjectionPowerup;
 import com.macduy.games.fstock.powerup.Powerup;
 import com.macduy.games.fstock.powerup.RaiseStockPricePowerup;
 
@@ -125,6 +126,7 @@ public class TradingActivity extends Activity {
 
         // Powerups.
         mPowerups.add(new RaiseStockPricePowerup());
+        mPowerups.add(new CashInjectionPowerup(250));
 
         // Create view controllers.
         mHoldingsViewController = new HoldingsRecyclerViewController(

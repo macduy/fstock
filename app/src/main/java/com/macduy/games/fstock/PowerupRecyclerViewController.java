@@ -3,9 +3,9 @@ package com.macduy.games.fstock;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
 import com.macduy.games.fstock.powerup.Powerup;
@@ -47,10 +47,8 @@ public class PowerupRecyclerViewController {
 
         @Override
         public PowerupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView view = new TextView(mContext);
-            LayoutParams lp = new LayoutParams(
-                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            view.setLayoutParams(lp);
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            TextView view = (TextView) inflater.inflate(R.layout.powerup_chip, parent, false);
 
             return new PowerupViewHolder(view);
         }
