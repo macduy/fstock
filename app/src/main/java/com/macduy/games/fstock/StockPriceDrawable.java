@@ -94,7 +94,7 @@ public class StockPriceDrawable extends Drawable {
     }
 
     public float getLatestPriceYOffset() {
-        return getBounds().bottom - mStockPrice.getLatest();
+        return mYMapper.get(mStockPrice.getLatest());
     }
 
     public void setTimeOffset(float offset) {
