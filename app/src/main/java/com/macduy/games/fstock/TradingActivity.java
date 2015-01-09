@@ -142,7 +142,7 @@ public class TradingActivity extends Activity {
     }
 
     private void updateHighscoreView() {
-        mHighScoreView.setText(String.format("Hightscore: %.2f", mHighScore));
+        mHighScoreView.setText(String.format("Highscore: %.2f", mHighScore));
     }
 
     @Override
