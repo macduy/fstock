@@ -21,13 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TradingActivity extends Activity {
-    private static final int UPDATE_MS = 64;
     private static final float STARTING_MONEY = 2500;
     private static final float STOP_TIME = 30 * 1000;
     private static final float MINIMUM_Y_AXIS_SPAN = 50;
 
+    private final GameController mController;
     private final StockPrice mStockPrice;
-    private final TimeAnimator mAnimator;
     private final List<Powerup> mPowerups = new ArrayList<>();
     private final MinimumSpanRange mRange;
 
@@ -73,12 +72,8 @@ public class TradingActivity extends Activity {
             };
 
     public TradingActivity() {
-        mAnimator = new TimeAnimator();
-        mAnimator.setRepeatCount(TimeAnimator.INFINITE);
-        mAnimator.setRepeatMode(TimeAnimator.RESTART);
-        mAnimator.setDuration(1000);
         mRange = new MinimumSpanRange(MINIMUM_Y_AXIS_SPAN);
-
+        mController = new GameController(new GameControllerListener());
         mStockPrice = new StockPrice();
     }
 
@@ -106,18 +101,6 @@ public class TradingActivity extends Activity {
         updateHighscoreView();
 
         // Set up tick update
-        mAnimator.setTimeListener(new TimeAnimator.TimeListener() {
-            private long nextUpdate = 0;
-            @Override
-            public void onTimeUpdate(TimeAnimator timeAnimator, long l, long l1) {
-                while (nextUpdate < l) {
-                    onTradeUpdate();
-                    nextUpdate += UPDATE_MS;
-                }
-                onUpdate(((float)(nextUpdate - l)) / UPDATE_MS);
-                onTimerUpdate(l);
-            }
-        });
 
         // Create game
         mCurrentGame = new GameState();
@@ -148,43 +131,13 @@ public class TradingActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAnimator.start();
+        mController.start();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mAnimator.cancel();
-    }
-
-    /**
-     * Updates the stock price. Probably also needs to be renamed.
-     */
-    protected void onTradeUpdate() {
-        // Generate random price.
-        float price = mStockPrice.getLatest();
-        float delta = ((float) Math.random() - 0.5f) * Math.min(0.5f * price, (float) (Math.pow(Math.random(), 5f) * 80f) + 15f);
-        price += delta;
-        mStockPrice.pushPrice(price);
-
-        // Update range.
-        float min = price;
-        float max = price;
-        for (float p : mStockPrice) {
-            if (p < min) {
-                min = p;
-            } else if (p > max) {
-                max = p;
-            }
-        }
-        mRange.set(min, max);
-
-        mStockPriceDrawable.invalidateSelf();
-        mCurrentPriceView.setText(String.format("£%.2f", price));
-
-        // Update portoflio view.
-        float portfolioValue = mCurrentGame.getPortfolioValue(mStockPrice);
-        mPortfolioValueView.setText(String.format("(£%.2f)", portfolioValue));
+        mController.stop();
     }
 
     public void onBuy(View view) {
@@ -249,36 +202,76 @@ public class TradingActivity extends Activity {
         }
     }
 
-    public void onUpdate(float offset) {
-        mStockPriceDrawable.setTimeOffset(offset);
-        mStockPriceDrawable.invalidateSelf();
+    class GameControllerListener implements GameController.Listener {
 
-        mCurrentPriceView.setTranslationY(mStockPriceDrawable.getLatestPriceYOffset() - 30f);
-    }
+        @Override
+        public void onGameStarted() {
 
-    public void onTimerUpdate(long elapsed) {
-        int remaining = (int)(STOP_TIME - elapsed) / 1000;
-        mTimeRemainingView.setText(String.format("%01d:%02d", remaining / 60, remaining % 60));
-        if (elapsed > STOP_TIME) {
-            // Stop game.
-            mAnimator.end();
-            mSellButton.setEnabled(false);
-            mBuyButton.setEnabled(false);
+        }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                mContainer.getOverlay().add(mCurrentMoneyView);
-                mContainer.animate().alpha(0.5f);
+        @Override
+        public void onGameEnded() {
+
+        }
+
+        @Override
+        public void onGameTick() {
+            // Generate random price.Cas
+            float price = mStockPrice.getLatest();
+            float delta = ((float) Math.random() - 0.5f) * Math.min(0.5f * price, (float) (Math.pow(Math.random(), 5f) * 80f) + 15f);
+            price += delta;
+            mStockPrice.pushPrice(price);
+
+            // Update range.
+            float min = price;
+            float max = price;
+            for (float p : mStockPrice) {
+                if (p < min) {
+                    min = p;
+                } else if (p > max) {
+                    max = p;
+                }
             }
+            mRange.set(min, max);
 
-            mCurrentMoneyView.animate().scaleX(2f).scaleY(2f);
+            mStockPriceDrawable.invalidateSelf();
+            mCurrentPriceView.setText(String.format("£%.2f", price));
 
-            // Commit highscore.
-            if (mCurrentGame.getCurrentMoney() > mHighScore) {
-                mHighScore = mCurrentGame.getCurrentMoney();
-                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-                editor.putFloat("highscore", mHighScore);
-                editor.commit();
-                updateHighscoreView();
+            // Update portoflio view.
+            float portfolioValue = mCurrentGame.getPortfolioValue(mStockPrice);
+            mPortfolioValueView.setText(String.format("(£%.2f)", portfolioValue));
+        }
+
+        @Override
+        public void onGameTimeUpdated(long totalElapsed, float sinceLast) {
+            mStockPriceDrawable.setTimeOffset(sinceLast);
+            mStockPriceDrawable.invalidateSelf();
+
+            mCurrentPriceView.setTranslationY(mStockPriceDrawable.getLatestPriceYOffset() - 30f);
+
+            int remaining = (int)(STOP_TIME - totalElapsed) / 1000;
+            mTimeRemainingView.setText(String.format("%01d:%02d", remaining / 60, remaining % 60));
+            if (totalElapsed > STOP_TIME) {
+                // Stop game.
+                mController.stop();
+                mSellButton.setEnabled(false);
+                mBuyButton.setEnabled(false);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    mContainer.getOverlay().add(mCurrentMoneyView);
+                    mContainer.animate().alpha(0.5f);
+                }
+
+                mCurrentMoneyView.animate().scaleX(2f).scaleY(2f);
+
+                // Commit highscore.
+                if (mCurrentGame.getCurrentMoney() > mHighScore) {
+                    mHighScore = mCurrentGame.getCurrentMoney();
+                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                    editor.putFloat("highscore", mHighScore);
+                    editor.commit();
+                    updateHighscoreView();
+                }
             }
         }
     }
