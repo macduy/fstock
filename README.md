@@ -1,0 +1,1 @@
+For Android Studio testing. https://github.com/evant/android-studio-unit-test-plugin
