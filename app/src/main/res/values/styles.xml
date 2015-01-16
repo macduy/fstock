@@ -5,4 +5,38 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!-- *** GAME ELEMENT STYLES *** -->
+    <style name="DataBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <!-- *** TEXT STYLES *** -->
+
+    <style name="BoldText">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- In-game data. -->
+    <style name="LargeDataText">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">45sp</item>
+        <item name="android:textColor">#ff333333</item>
+        <item name="android:gravity">bottom</item>
+    </style>
+
+    <!-- Descriptor labels. -->
+    <style name="SmallLabel">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">#ff888888</item>
+        <item name="android:gravity">top</item>
+    </style>
 </resources>

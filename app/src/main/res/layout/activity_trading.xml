@@ -4,12 +4,106 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context=".TradingActivity">
+
+    <RelativeLayout
+        android:id="@+id/stock_header"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:paddingTop="20dp"
+        android:background="@color/trading_green">
+
+        <TextView
+            android:id="@+id/current_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_marginRight="20dp"
+            style="@style/BoldText"
+            android:text="500.00"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            />
+
+        <View
+            android:id="@+id/graph"
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/_test"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/time_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="1:00"
+                />
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Time remaining"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/current_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="£1000"
+                />
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Cash"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/portfolio_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="£1200"
+                />
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Portfolio value"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/highscore"
@@ -20,46 +114,6 @@
         android:textStyle="bold"
         android:text="Highscore:"
         />
-
-    <TextView
-        android:id="@+id/time_remaining"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="5dp"
-        android:padding="5dp"
-        android:background="#ffdddddd"
-        android:textSize="18sp"
-        android:text="1:00"
-        />
-
-    <RelativeLayout
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:clipToPadding="false">
-        <View
-            android:id="@+id/graph"
-            android:layout_gravity="center"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:background="#fffa78f7"
-            android:layout_centerHorizontal="true"
-            />
-        <TextView
-            android:id="@+id/current_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:gravity="left"
-            android:textSize="14sp"
-            android:text="£500"
-            android:textColor="@color/graphEdge"
-            android:layout_toRightOf="@id/graph"
-            android:layout_alignParentTop="true"
-            />
-    </RelativeLayout>
 
     <!-- Action buttons -->
     <LinearLayout
@@ -90,28 +144,10 @@
     <!-- Current holdings -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/holdings"
+        android:visibility="gone"
         android:layout_height="30dp"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
-        />
-
-    <!-- Monetary summaries -->
-    <TextView
-        android:id="@+id/current_money"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="36sp"
-        android:text="£1000"
-        />
-
-    <TextView
-        android:id="@+id/portfolio_value"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:text="(£1000)"
         />
 
     <TextView
@@ -134,6 +170,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/powerups"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="40dp" />
 

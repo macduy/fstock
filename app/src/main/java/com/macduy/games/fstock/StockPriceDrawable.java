@@ -25,11 +25,11 @@ public class StockPriceDrawable extends Drawable {
 
     private float mOffset;
 
-    public StockPriceDrawable(Resources resources, StockPrice stockPrice, Range yRange) {
+    public StockPriceDrawable(Resources res, StockPrice stockPrice, Range yRange) {
         mStockPrice = stockPrice;
         mPaint.setAntiAlias(true);
-        mPaint.setColor(resources.getColor(R.color.graphEdge));
-        mPaint.setStrokeWidth(6f);
+        mPaint.setColor(res.getColor(R.color.graphEdge));
+        mPaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.stock_line_thickness));
         mPaint.setStyle(Paint.Style.STROKE);
 
         mVBoundsRange = new Range() {
@@ -47,7 +47,7 @@ public class StockPriceDrawable extends Drawable {
         mYMapper = new RangeMapper(yRange, mVBoundsRange);
 
         mFillPaint.setAntiAlias(true);
-        mFillPaint.setColor(resources.getColor(R.color.graphFill));
+        mFillPaint.setColor(res.getColor(R.color.graphFill));
     }
 
     @Override

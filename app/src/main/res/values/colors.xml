@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="graphEdge">#ff374f81</color>
-    <color name="graphFill">#ffa8bdd1</color>
+    <!-- Basic colors -->
+    <color name="white">#ffffffff</color>
+
+    <color name="graphEdge">#ffffffff</color>
+    <color name="graphFill">#00000000</color>
+
+    <color name="trading_green">#ffa6c776</color>
+
+    <!-- Special color for layout testing purposes, removed at runtime -->
+    <color name="_test">#fffa78f7</color>
 </resources>

@@ -239,15 +239,13 @@ public class TradingActivity extends Activity {
 
             // Update portoflio view.
             float portfolioValue = mCurrentGame.getPortfolioValue(mStockPrice);
-            mPortfolioValueView.setText(String.format("(£%.2f)", portfolioValue));
+            mPortfolioValueView.setText(String.format("£%.2f", portfolioValue));
         }
 
         @Override
         public void onGameTimeUpdated(long totalElapsed, float sinceLast) {
             mStockPriceDrawable.setTimeOffset(sinceLast);
             mStockPriceDrawable.invalidateSelf();
-
-            mCurrentPriceView.setTranslationY(mStockPriceDrawable.getLatestPriceYOffset() - 30f);
 
             int remaining = (int)(STOP_TIME - totalElapsed) / 1000;
             mTimeRemainingView.setText(String.format("%01d:%02d", remaining / 60, remaining % 60));
