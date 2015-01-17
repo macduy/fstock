@@ -39,7 +39,7 @@ public class TradingActivity extends Activity {
     private TextView mHighScoreView;
     private RecyclerView mHoldingsView;
     private RecyclerView mPowerupsView;
-    private StockPriceDrawable mStockPriceDrawable;
+    private StockPriceChartDrawable mStockPriceDrawable;
     private Button mBuyButton;
     private Button mSellButton;
 
@@ -117,7 +117,7 @@ public class TradingActivity extends Activity {
                 mPowerupsView, mPowerups, mPowerupSelectedListener);
 
         // Create graph.
-        mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice, mRange);
+        mStockPriceDrawable = new StockPriceChartDrawable(getResources(), mStockPrice, mRange);
         graph.setBackground(mStockPriceDrawable);
 
         updateViews();

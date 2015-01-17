@@ -3,5 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="stock_line_thickness">2.5dp</dimen>
+    <dimen name="line_chart_thickness">2.5dp</dimen>
+    <dimen name="line_chart_shadow_offest">1dp</dimen>
+    <dimen name="gridline_thickness">0.8dp</dimen>
+    <dimen name="gridline_label_font_size">8dp</dimen>
 </resources>
