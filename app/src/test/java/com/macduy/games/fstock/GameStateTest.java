@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(FstockTestRunner.class)
 @Config(emulateSdk = 18)
 public class GameStateTest {
     private static final float DELTA = 0.001f;

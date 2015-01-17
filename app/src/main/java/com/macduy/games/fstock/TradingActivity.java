@@ -1,6 +1,5 @@
 package com.macduy.games.fstock;
 
-import android.animation.TimeAnimator;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -121,7 +120,7 @@ public class TradingActivity extends Activity {
         mStockPriceDrawable = new StockPriceDrawable(getResources(), mStockPrice, mRange);
         graph.setBackground(mStockPriceDrawable);
 
-        updateCurrentMoneyView();
+        updateViews();
     }
 
     private void updateHighscoreView() {
@@ -142,21 +141,20 @@ public class TradingActivity extends Activity {
 
     public void onBuy(View view) {
         if (mCurrentGame.maybeBuy(mStockPrice)) {
-            updateCurrentMoneyView();
+            updateViews();
         }
     }
 
     public void onSell(View view) {
         if (mCurrentGame.maybeSell(mStockPrice)) {
-            updateCurrentMoneyView();
+            updateViews();
         }
     }
 
     /**
-     * Updates probably everything due to a trade being made.
-     * Should also probably be renamed.
+     * Update all views.
      */
-    private void updateCurrentMoneyView() {
+    private void updateViews() {
         mHoldingsViewController.notifyDataSetChanged();
 
         float performance = (mCurrentGame.getCurrentMoney() - STARTING_MONEY) / STARTING_MONEY;

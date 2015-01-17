@@ -1,5 +1,7 @@
 package com.macduy.games.fstock.graph;
 
+import com.macduy.games.fstock.FstockTestRunner;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -7,7 +9,7 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(FstockTestRunner.class)
 @Config(emulateSdk = 18)
 public class MinimumSpanRangeTest {
     private static final float DELTA = 0.00001f;

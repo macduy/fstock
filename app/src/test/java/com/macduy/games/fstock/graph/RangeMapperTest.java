@@ -1,5 +1,7 @@
 package com.macduy.games.fstock.graph;
 
+import com.macduy.games.fstock.FstockTestRunner;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +13,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(FstockTestRunner.class)
 @Config(emulateSdk = 18)
 public class RangeMapperTest {
     private static final float DELTA = 0.00001f;

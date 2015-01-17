@@ -60,6 +60,23 @@
                 android:text="Time remaining"
                 />
         </LinearLayout>
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/stocks_held"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="1"
+                />
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Stocks held"
+                />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
