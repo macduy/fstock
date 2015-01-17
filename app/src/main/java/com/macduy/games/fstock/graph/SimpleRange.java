@@ -7,6 +7,11 @@ public class SimpleRange implements Range {
     private float mStart;
     private float mEnd;
 
+    public SimpleRange() {}
+    public SimpleRange(float start, float end) {
+        set(start, end);
+    }
+
     public void set(float start, float end) {
         mStart = start;
         mEnd = end;
