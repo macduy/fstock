@@ -23,7 +23,6 @@ import java.util.List;
 
 public class TradingActivity extends Activity {
     private static final float STARTING_MONEY = 2500;
-    private static final float STOP_TIME = 30 * 1000;
     private static final float MINIMUM_Y_AXIS_SPAN = 50;
 
     private final GameController mController;
@@ -213,7 +212,24 @@ public class TradingActivity extends Activity {
 
         @Override
         public void onGameEnded() {
+            mSellButton.setEnabled(false);
+            mBuyButton.setEnabled(false);
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                mContainer.getOverlay().add(mCurrentMoneyView);
+                mContainer.animate().alpha(0.5f);
+            }
+
+            mCurrentMoneyView.animate().scaleX(2f).scaleY(2f);
+
+            // Commit highscore.
+            if (mCurrentGame.getCurrentMoney() > mHighScore) {
+                mHighScore = mCurrentGame.getCurrentMoney();
+                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                editor.putFloat("highscore", mHighScore);
+                editor.commit();
+                updateHighscoreView();
+            }
         }
 
         @Override
@@ -245,34 +261,11 @@ public class TradingActivity extends Activity {
         }
 
         @Override
-        public void onGameTimeUpdated(long totalElapsed, float sinceLast) {
+        public void onGameTimeUpdated(GameController controller, float sinceLast) {
             mStockPriceDrawable.setTimeOffset(sinceLast);
             mStockPriceDrawable.invalidateSelf();
 
-            int remaining = (int)(STOP_TIME - totalElapsed) / 1000;
-            mTimeRemainingView.setText(String.format("%01d:%02d", remaining / 60, remaining % 60));
-            if (totalElapsed > STOP_TIME) {
-                // Stop game.
-                mController.stop();
-                mSellButton.setEnabled(false);
-                mBuyButton.setEnabled(false);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    mContainer.getOverlay().add(mCurrentMoneyView);
-                    mContainer.animate().alpha(0.5f);
-                }
-
-                mCurrentMoneyView.animate().scaleX(2f).scaleY(2f);
-
-                // Commit highscore.
-                if (mCurrentGame.getCurrentMoney() > mHighScore) {
-                    mHighScore = mCurrentGame.getCurrentMoney();
-                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-                    editor.putFloat("highscore", mHighScore);
-                    editor.commit();
-                    updateHighscoreView();
-                }
-            }
+            mTimeRemainingView.setText(Format.minuteSeconds(controller.getRemainingTime()));
         }
     }
 }

@@ -1,12 +1,14 @@
 package com.macduy.games.fstock;
 
 import android.animation.TimeAnimator;
+import android.os.SystemClock;
 
 /**
  *
  */
 public class GameController {
     private static final int UPDATE_MS = 64;
+    private static final int GAME_DURATION_MS = 30 * 1000;
 
     private enum State {
         /** Current game is running. */
@@ -17,7 +19,11 @@ public class GameController {
     }
 
     private final Listener mListener;
+
     private TimeAnimator mAnimator;
+    private long mGameStart;
+    private long mCurrentGameTime;
+    private Clock mClock = new Clock();
 
     public GameController(Listener listener) {
         mListener = listener;
@@ -32,18 +38,34 @@ public class GameController {
             private long nextUpdate = 0;
             @Override
             public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
+                mCurrentGameTime = totalTime;
                 while (nextUpdate < totalTime) {
                     mListener.onGameTick();
                     nextUpdate += UPDATE_MS;
                 }
-                mListener.onGameTimeUpdated(
-                        totalTime, ((float) (nextUpdate - totalTime)) / UPDATE_MS);
+                mListener.onGameTimeUpdated(GameController.this, ((float) (nextUpdate - totalTime)) / UPDATE_MS);
+
+                if (mCurrentGameTime > GAME_DURATION_MS) {
+                    // Stop timer.
+                    mAnimator.end();
+
+                    mListener.onGameEnded();
+                }
             }
         });
     }
 
     public void start() {
+        mGameStart = mClock.getTime();
         mAnimator.start();
+    }
+
+    public long getCurrentGameTime() {
+        return mCurrentGameTime;
+    }
+
+    public long getRemainingTime() {
+        return GAME_DURATION_MS - mCurrentGameTime;
     }
 
     // TODO: Remove this, shouldn't exist
@@ -55,6 +77,6 @@ public class GameController {
         void onGameStarted();
         void onGameEnded();
         void onGameTick();
-        void onGameTimeUpdated(long totalElapsed, float sinceLast);
+        void onGameTimeUpdated(GameController controller, float sinceLast);
     }
 }
