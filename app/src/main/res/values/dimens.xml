@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="line_chart_thickness">2.5dp</dimen>
-    <dimen name="line_chart_shadow_offest">1dp</dimen>
+    <dimen name="line_chart_shadow_offset">1.5dp</dimen>
     <dimen name="line_chart_padding">10dp</dimen>
     <dimen name="line_chart_left_padding_extra">15dp</dimen>
     <dimen name="gridline_thickness">0.75dp</dimen>

@@ -6,11 +6,12 @@
     <!-- Chart colors -->
     <color name="line_chart_line">#ffffffff</color>
     <color name="line_chart_fill">#00000000</color>
-    <color name="line_chart_shadow">#66000000</color>
+    <color name="line_chart_shadow">#30000000</color>
     <color name="gridline">#66000000</color>
 
     <color name="trading_green">#ffa6c776</color>
 
     <!-- Special color for layout testing purposes, removed at runtime -->
     <color name="_test">#fffa78f7</color>
+    <color name="background">#dddddd</color>
 </resources>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import com.macduy.games.fstock.graph.MinimumSpanRange;
 import com.macduy.games.fstock.powerup.CashInjectionPowerup;
 import com.macduy.games.fstock.powerup.Powerup;
 import com.macduy.games.fstock.powerup.RaiseStockPricePowerup;
+import com.macduy.games.fstock.ui.Format;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +81,7 @@ public class TradingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_trading);
 
         mContainer = (ViewGroup) findViewById(R.id.container);
@@ -94,6 +97,8 @@ public class TradingActivity extends Activity {
         mHoldingsView = (RecyclerView) findViewById(R.id.holdings);
         mPowerupsView = (RecyclerView) findViewById(R.id.powerups);
         View graph = findViewById(R.id.graph);
+
+        // graph.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         // Update high score.
         mHighScore = getPreferences(MODE_PRIVATE).getFloat("highscore", 0);
@@ -124,7 +129,7 @@ public class TradingActivity extends Activity {
     }
 
     private void updateHighscoreView() {
-        mHighScoreView.setText(String.format("Highscore: %.2f", mHighScore));
+        mHighScoreView.setText(String.format("Highscore: %s", Format.monetary(mHighScore)));
     }
 
     @Override
@@ -187,8 +192,7 @@ public class TradingActivity extends Activity {
         mPerformanceView.setTextColor(color);
         mPerformanceView.setText(prefix + performanceString);
         mRatingView.setText(rating);
-        mCurrentMoneyView.setText(String.format("£%.2f", mCurrentGame.getCurrentMoney()));
-
+        mCurrentMoneyView.setText(Format.monetary(mCurrentGame.getCurrentMoney()));
         // update buttons
         mSellButton.setEnabled(mCurrentGame.hasTrades());
         mBuyButton.setEnabled(mCurrentGame.getTrades() <= 10);
@@ -233,11 +237,11 @@ public class TradingActivity extends Activity {
             mRange.set(min, max);
 
             mStockPriceDrawable.invalidateSelf();
-            mCurrentPriceView.setText(String.format("£%.2f", price));
+            mCurrentPriceView.setText(Format.monetary(price));
 
-            // Update portoflio view.
+            // Update portfolio view.
             float portfolioValue = mCurrentGame.getPortfolioValue(mStockPrice);
-            mPortfolioValueView.setText(String.format("£%.2f", portfolioValue));
+            mPortfolioValueView.setText(Format.monetary(portfolioValue));
         }
 
         @Override

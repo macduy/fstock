@@ -1,6 +1,7 @@
 package com.macduy.games.fstock;
 
 import android.content.res.Resources;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.DashPathEffect;
@@ -51,7 +52,7 @@ public class StockPriceChartDrawable extends Drawable {
 
     public StockPriceChartDrawable(Resources res, StockPrice stockPrice, Range yRange) {
         mStockPrice = stockPrice;
-        mShadowOffset = res.getDimensionPixelOffset(R.dimen.line_chart_shadow_offest);
+        mShadowOffset = res.getDimensionPixelOffset(R.dimen.line_chart_shadow_offset);
         mChartPadding = res.getDimensionPixelSize(R.dimen.line_chart_padding);
         mGridlineLabelOffset = res.getDimensionPixelOffset(R.dimen.gridline_label_offset);
         mChartLeftPaddingExtra = res.getDimensionPixelSize(R.dimen.line_chart_left_padding_extra);
@@ -60,7 +61,6 @@ public class StockPriceChartDrawable extends Drawable {
         mLinePaint.setColor(res.getColor(R.color.line_chart_line));
         mLinePaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.line_chart_thickness));
         mLinePaint.setStyle(Paint.Style.STROKE);
-        mLinePaint.setStrokeJoin(Paint.Join.ROUND);
         mLinePaint.setStrokeCap(Paint.Cap.ROUND);
 
         mShadowPaint.setAntiAlias(true);
