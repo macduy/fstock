@@ -2,6 +2,8 @@
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
+/.idea/dictionaries
+/.idea/inspectionProfiles
 /gen_docs
 .DS_Store
 /build

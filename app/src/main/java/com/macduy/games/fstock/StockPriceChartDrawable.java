@@ -12,12 +12,10 @@ import android.graphics.drawable.Drawable;
 
 import com.macduy.games.fstock.graph.Range;
 import com.macduy.games.fstock.graph.RangeMapper;
-import com.macduy.games.fstock.graph.SimpleRange;
 
 public class StockPriceChartDrawable extends Drawable {
     // TODO: Unharcode these.
     private static final int GRIDLINE_SPACING = 50;
-    private static final int TIMESPAN = 100;
 
     // Data range.
     private final Range mYRange;
@@ -176,15 +174,15 @@ public class StockPriceChartDrawable extends Drawable {
     }
 
     @Override
+    public int getOpacity() {
+        return PixelFormat.TRANSPARENT;
+    }
+
+    @Override
     public void setAlpha(int i) {
     }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
-    }
-
-    @Override
-    public int getOpacity() {
-        return PixelFormat.TRANSPARENT;
     }
 }
