@@ -13,7 +13,7 @@ public class FstockTestRunner extends RobolectricTestRunner {
 
     @Override
     protected AndroidManifest getAppManifest(Config config) {
-        String appRoot = "C:/Users/DuyHai/Documents/Android Studio/Fstock/app/src/main/";
+        String appRoot = "src/main/";
         String manifestPath = appRoot + "AndroidManifest.xml";
         String resDir = appRoot + "res";
         String assetsDir = appRoot + "assets";
