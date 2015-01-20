@@ -1,10 +1,14 @@
 package com.macduy.games.fstock;
 
 import android.animation.TimeAnimator;
-import android.os.SystemClock;
 
 /**
+ * Runs the show!
  *
+ * Responsibilities:
+ *  - Keep track of current time
+ *  - Decide when the stock price should be updated.
+ *  - Track when the game should end.
  */
 public class GameController {
     private static final int UPDATE_MS = 64;
@@ -43,7 +47,7 @@ public class GameController {
                     mListener.onGameTick();
                     nextUpdate += UPDATE_MS;
                 }
-                mListener.onGameTimeUpdated(GameController.this, ((float) (nextUpdate - totalTime)) / UPDATE_MS);
+                mListener.onGameTimeUpdated();
 
                 if (mCurrentGameTime > GAME_DURATION_MS) {
                     // Stop timer.
@@ -57,6 +61,7 @@ public class GameController {
 
     public void start() {
         mGameStart = mClock.getTime();
+        mListener.onGameStarted();
         mAnimator.start();
     }
 
@@ -77,6 +82,6 @@ public class GameController {
         void onGameStarted();
         void onGameEnded();
         void onGameTick();
-        void onGameTimeUpdated(GameController controller, float sinceLast);
+        void onGameTimeUpdated();
     }
 }

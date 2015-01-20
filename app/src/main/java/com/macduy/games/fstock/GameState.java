@@ -39,8 +39,8 @@ public class GameState {
      * Attempt to buy a stock at given price.
      * @return {@code true} if purchase was successful.
      */
-    public boolean maybeBuy(StockPrice stock) {
-        float price = stock.getLatest();
+    public boolean maybeBuy(StockData stock) {
+        float price = stock.getLatest().price;
         if (mCurrentMoney > price) {
             mCurrentMoney -= price;
             mHoldings.add(new Holding(stock));
@@ -53,9 +53,9 @@ public class GameState {
      * Sells a stock at given price.
      * @return {@code true} if sell was successful.
      */
-    public boolean maybeSell(StockPrice stock) {
+    public boolean maybeSell(StockData stock) {
         if (hasTrades()) {
-            mCurrentMoney += stock.getLatest();
+            mCurrentMoney += stock.getLatest().price;
             mHoldings.remove(0);
             return true;
         }
@@ -65,7 +65,7 @@ public class GameState {
     /**
      * @return The current portfolio value given current trades and stock price.
      */
-    public float getPortfolioValue(StockPrice stock) {
-        return mCurrentMoney + getTrades() * stock.getLatest();
+    public float getPortfolioValue(StockData stock) {
+        return mCurrentMoney + getTrades() * stock.getLatest().price;
     }
 }

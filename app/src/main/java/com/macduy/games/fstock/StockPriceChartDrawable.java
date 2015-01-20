@@ -1,7 +1,6 @@
 package com.macduy.games.fstock;
 
 import android.content.res.Resources;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.DashPathEffect;
@@ -35,7 +34,7 @@ public class StockPriceChartDrawable extends Drawable {
     private final int mGridlineLabelOffset;
     private final int mChartLeftPaddingExtra;
 
-    private StockPrice mStockPrice;
+    private StockData mStockData;
     private Paint mLinePaint = new Paint();
     private Paint mShadowPaint = new Paint();
     private Paint mFillPaint = new Paint();
@@ -48,10 +47,9 @@ public class StockPriceChartDrawable extends Drawable {
 
     private Rect mDrawBounds = new Rect();
 
-    private float mOffset;
-
-    public StockPriceChartDrawable(Resources res, StockPrice stockPrice, Range yRange) {
-        mStockPrice = stockPrice;
+    public StockPriceChartDrawable(Resources res, StockData stockData,
+            final Range yRange, final Range timeRange) {
+        mStockData = stockData;
         mShadowOffset = res.getDimensionPixelOffset(R.dimen.line_chart_shadow_offset);
         mChartPadding = res.getDimensionPixelSize(R.dimen.line_chart_padding);
         mGridlineLabelOffset = res.getDimensionPixelOffset(R.dimen.gridline_label_offset);
@@ -62,6 +60,9 @@ public class StockPriceChartDrawable extends Drawable {
         mLinePaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.line_chart_thickness));
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setStrokeCap(Paint.Cap.ROUND);
+
+        mFillPaint.setAntiAlias(true);
+        mFillPaint.setColor(res.getColor(R.color.line_chart_fill));
 
         mShadowPaint.setAntiAlias(true);
         mShadowPaint.setColor(res.getColor(R.color.line_chart_shadow));
@@ -81,7 +82,7 @@ public class StockPriceChartDrawable extends Drawable {
 
         mYRange = yRange;
         // TODO: Make this based on time.
-        mXRange = new SimpleRange(0f, (float) TIMESPAN);
+        mXRange = timeRange;
 
         mChartVBound = new Range() {
             @Override public float start() { return mDrawBounds.bottom; }
@@ -93,11 +94,8 @@ public class StockPriceChartDrawable extends Drawable {
             @Override public float end() { return mDrawBounds.right; }
         };
 
-        mYMapper = new RangeMapper(yRange, mChartVBound);
+        mYMapper = new RangeMapper(mYRange, mChartVBound);
         mXMapper = new RangeMapper(mXRange, mChartHBound);
-
-        mFillPaint.setAntiAlias(true);
-        mFillPaint.setColor(res.getColor(R.color.line_chart_fill));
     }
 
     @Override
@@ -120,9 +118,9 @@ public class StockPriceChartDrawable extends Drawable {
 
         mShadePath.moveTo(b.left, b.bottom);
         float x, y = 0;
-        for (float price : mStockPrice) {
-            x = mXMapper.get(i + mOffset);
-            y = mYMapper.get(price);
+        for (StockData.Price price : mStockData) {
+            x = mXMapper.get(price.time);
+            y = mYMapper.get(price.price);
 
             if (i == 0) {
                 mPath.moveTo(b.left, y);
@@ -175,14 +173,6 @@ public class StockPriceChartDrawable extends Drawable {
 
             gridline += GRIDLINE_SPACING;
         }
-    }
-
-    public float getLatestPriceYOffset() {
-        return mYMapper.get(mStockPrice.getLatest());
-    }
-
-    public void setTimeOffset(float offset) {
-        mOffset = offset;
     }
 
     @Override

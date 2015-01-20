@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.macduy.games.fstock.graph.FixedRange;
 import com.macduy.games.fstock.graph.MinimumSpanRange;
 import com.macduy.games.fstock.powerup.CashInjectionPowerup;
 import com.macduy.games.fstock.powerup.Powerup;
@@ -26,9 +27,10 @@ public class TradingActivity extends Activity {
     private static final float MINIMUM_Y_AXIS_SPAN = 50;
 
     private final GameController mController;
-    private final StockPrice mStockPrice;
+    private final StockData mStockData;
     private final List<Powerup> mPowerups = new ArrayList<>();
     private final MinimumSpanRange mRange;
+    private final FixedRange mTimeRange;
 
     private ViewGroup mContainer;
     private TextView mCurrentPriceView;
@@ -57,8 +59,8 @@ public class TradingActivity extends Activity {
         }
 
         @Override
-        public StockPrice getStockPrice() {
-            return mStockPrice;
+        public StockData getStockPrice() {
+            return mStockData;
         }
     };
 
@@ -73,8 +75,9 @@ public class TradingActivity extends Activity {
 
     public TradingActivity() {
         mRange = new MinimumSpanRange(MINIMUM_Y_AXIS_SPAN);
+        mTimeRange = new FixedRange(6400); // Computed as 100 points * UPDATE_MS (64)
         mController = new GameController(new GameControllerListener());
-        mStockPrice = new StockPrice();
+        mStockData = new StockData();
     }
 
     @Override
@@ -108,7 +111,7 @@ public class TradingActivity extends Activity {
         // Create game
         mCurrentGame = new GameState();
         mCurrentGame.setCurrentMoney(STARTING_MONEY);
-        mStockPrice.reset(400);
+        mStockData.reset();
 
         // Powerups.
         mPowerups.add(new RaiseStockPricePowerup());
@@ -121,7 +124,8 @@ public class TradingActivity extends Activity {
                 mPowerupsView, mPowerups, mPowerupSelectedListener);
 
         // Create graph.
-        mStockPriceDrawable = new StockPriceChartDrawable(getResources(), mStockPrice, mRange);
+        mStockPriceDrawable = new StockPriceChartDrawable(
+                getResources(), mStockData, mRange, mTimeRange);
         graph.setBackground(mStockPriceDrawable);
 
         updateViews();
@@ -144,13 +148,13 @@ public class TradingActivity extends Activity {
     }
 
     public void onBuy(View view) {
-        if (mCurrentGame.maybeBuy(mStockPrice)) {
+        if (mCurrentGame.maybeBuy(mStockData)) {
             updateViews();
         }
     }
 
     public void onSell(View view) {
-        if (mCurrentGame.maybeSell(mStockPrice)) {
+        if (mCurrentGame.maybeSell(mStockData)) {
             updateViews();
         }
     }
@@ -207,7 +211,7 @@ public class TradingActivity extends Activity {
 
         @Override
         public void onGameStarted() {
-
+            mStockData.pushPrice(0L, 400f);
         }
 
         @Override
@@ -234,20 +238,20 @@ public class TradingActivity extends Activity {
 
         @Override
         public void onGameTick() {
-            // Generate random price.Cas
-            float price = mStockPrice.getLatest();
+            // Generate random price.
+            float price = mStockData.getLatest().price;
             float delta = ((float) Math.random() - 0.5f) * Math.min(0.5f * price, (float) (Math.pow(Math.random(), 5f) * 80f) + 15f);
             price += delta;
-            mStockPrice.pushPrice(price);
+            mStockData.pushPrice(mController.getCurrentGameTime(), price);
 
             // Update range.
             float min = price;
             float max = price;
-            for (float p : mStockPrice) {
-                if (p < min) {
-                    min = p;
-                } else if (p > max) {
-                    max = p;
+            for (StockData.Price p : mStockData) {
+                if (p.price < min) {
+                    min = p.price;
+                } else if (p.price > max) {
+                    max = p.price;
                 }
             }
             mRange.set(min, max);
@@ -256,16 +260,17 @@ public class TradingActivity extends Activity {
             mCurrentPriceView.setText(Format.monetary(price));
 
             // Update portfolio view.
-            float portfolioValue = mCurrentGame.getPortfolioValue(mStockPrice);
+            float portfolioValue = mCurrentGame.getPortfolioValue(mStockData);
             mPortfolioValueView.setText(Format.monetary(portfolioValue));
         }
 
         @Override
-        public void onGameTimeUpdated(GameController controller, float sinceLast) {
-            mStockPriceDrawable.setTimeOffset(sinceLast);
+        public void onGameTimeUpdated() {
+            // Update time range.
+            mTimeRange.setEnd(mController.getCurrentGameTime());
             mStockPriceDrawable.invalidateSelf();
 
-            mTimeRemainingView.setText(Format.minuteSeconds(controller.getRemainingTime()));
+            mTimeRemainingView.setText(Format.minuteSeconds(mController.getRemainingTime()));
         }
     }
 }

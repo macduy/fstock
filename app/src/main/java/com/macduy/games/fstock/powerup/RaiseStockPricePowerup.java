@@ -1,6 +1,6 @@
 package com.macduy.games.fstock.powerup;
 
-import com.macduy.games.fstock.StockPrice;
+import com.macduy.games.fstock.StockData;
 
 /**
  * TODO: Javadoc
@@ -14,7 +14,8 @@ public class RaiseStockPricePowerup implements Powerup {
     @Override
     public void apply(Applicator applicator) {
         // Raise the price.
-        StockPrice stock = applicator.getStockPrice();
-        stock.pushPrice(stock.getLatest() * 2f);
+        StockData stock = applicator.getStockPrice();
+        // TODO: This is currently broken.
+//        stock.pushPrice(stock.getLatest().price * 2f);
     }
 }

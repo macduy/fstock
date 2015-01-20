@@ -1,7 +1,7 @@
 package com.macduy.games.fstock.powerup;
 
 import com.macduy.games.fstock.GameState;
-import com.macduy.games.fstock.StockPrice;
+import com.macduy.games.fstock.StockData;
 
 /**
  * PowerUps that can affect the current game.
@@ -16,6 +16,6 @@ public interface Powerup {
     /** Interface through which powerups are allowed to affect the game. */
     public interface Applicator {
         GameState getGameState();
-        StockPrice getStockPrice();
+        StockData getStockPrice();
     }
 }

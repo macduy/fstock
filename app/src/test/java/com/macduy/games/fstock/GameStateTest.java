@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +17,8 @@ import static org.mockito.Mockito.when;
 public class GameStateTest {
     private static final float DELTA = 0.001f;
 
-    @Mock StockPrice mStock;
+    @Mock
+    StockData mStock;
 
     GameState mState;
 
@@ -39,8 +39,10 @@ public class GameStateTest {
         assertEquals(0, mState.getTrades());
         assertFalse(mState.hasTrades());
 
+        StockData.Price price = new StockData.Price(0, 500f);
+
         mState.setCurrentMoney(1000f);
-        when(mStock.getLatest()).thenReturn(500f);
+        when(mStock.getLatest()).thenReturn(price);
         assertTrue(mState.maybeBuy(mStock));
 
         assertEquals(mState.getCurrentMoney(), 500f, DELTA);
@@ -50,8 +52,10 @@ public class GameStateTest {
 
     @Test
     public void testBuy_notEnoughMoney() {
+        StockData.Price price = new StockData.Price(0, 2000f);
+
         mState.setCurrentMoney(1999.99f);
-        when(mStock.getLatest()).thenReturn(2000f);
+        when(mStock.getLatest()).thenReturn(price);
 
         assertFalse(mState.maybeBuy(mStock));
 

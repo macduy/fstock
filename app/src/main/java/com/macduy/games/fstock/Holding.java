@@ -4,9 +4,9 @@ package com.macduy.games.fstock;
  * Represents a purchased
  */
 public class Holding {
-    private StockPrice mStock;
+    private StockData mStock;
 
-    public Holding(StockPrice stock) {
+    public Holding(StockData stock) {
         mStock = stock;
     }
 }
