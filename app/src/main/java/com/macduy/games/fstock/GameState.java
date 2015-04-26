@@ -65,7 +65,11 @@ public class GameState {
     /**
      * @return The current portfolio value given current trades and stock price.
      */
-    public float getPortfolioValue(StockData stock) {
-        return mCurrentMoney + getTrades() * stock.getLatest().price;
+    public float getPortfolioValue() {
+        float sum = mCurrentMoney;
+        for (Holding h : mHoldings) {
+            sum += h.stock.getLatest().price;
+        }
+        return sum;
     }
 }

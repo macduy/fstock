@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.macduy.games.fstock.view.TradingView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <RelativeLayout
+        android:id="@+id/stock_header"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:paddingTop="20dp"
+        android:background="@color/trading_green">
+
+        <TextView
+            android:id="@+id/current_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_marginRight="20dp"
+            style="@style/BoldText"
+            android:text="500.00"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            />
+
+        <View
+            android:id="@+id/graph"
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/_test"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/time_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="1:00"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Time remaining"
+                />
+        </LinearLayout>
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/stocks_held"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="1"
+                />
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Stocks held"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/current_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="£1000"
+                />
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Cash"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout style="@style/DataBox">
+            <TextView
+                android:id="@+id/portfolio_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/LargeDataText"
+                android:text="£1200"
+                />
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmallLabel"
+                android:text="Portfolio value"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/highscore"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="bold"
+        android:text="Highscore:"
+        />
+
+    <!-- Action buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buy"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Buy"
+            android:onClick="onBuy"
+            />
+
+        <Button
+            android:id="@+id/sell"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Sell"
+            android:onClick="onSell"
+            />
+
+    </LinearLayout>
+
+    <!-- Current holdings -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/holdings"
+        android:visibility="gone"
+        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/performance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:text="£1000"
+        />
+
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="Meh!"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/powerups"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+</com.macduy.games.fstock.view.TradingView>

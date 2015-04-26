@@ -11,6 +11,9 @@
 
     <color name="trading_green">#ffa6c776</color>
 
+    <!-- Game summary -->
+    <color name="game_summary_background">#ff4b65aa</color>
+
     <!-- Special color for layout testing purposes, removed at runtime -->
     <color name="_test">#fffa78f7</color>
     <color name="background">#dddddd</color>

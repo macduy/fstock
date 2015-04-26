@@ -3,7 +3,6 @@ package com.macduy.games.fstock;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,11 +17,14 @@ import com.macduy.games.fstock.powerup.CashInjectionPowerup;
 import com.macduy.games.fstock.powerup.Powerup;
 import com.macduy.games.fstock.powerup.RaiseStockPricePowerup;
 import com.macduy.games.fstock.ui.Format;
+import com.macduy.games.fstock.view.EffectsView;
+import com.macduy.games.fstock.view.GameSummaryView;
+import com.macduy.games.fstock.view.TradingView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TradingActivity extends Activity {
+public class TradingActivity extends Activity implements TradingView.OverscrollListener {
     private static final float STARTING_MONEY = 2500;
     private static final float MINIMUM_Y_AXIS_SPAN = 50;
 
@@ -32,7 +34,11 @@ public class TradingActivity extends Activity {
     private final MinimumSpanRange mRange;
     private final FixedRange mTimeRange;
 
-    private ViewGroup mContainer;
+    private TradingView mTradingView;
+    private EffectsView mEffectsView;
+    private GameSummaryView mGameSummaryView;
+    private View mTestView;
+
     private TextView mCurrentPriceView;
     private TextView mCurrentMoneyView;
     private TextView mRatingView;
@@ -86,7 +92,11 @@ public class TradingActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_trading);
 
-        mContainer = (ViewGroup) findViewById(R.id.container);
+        mTradingView = (TradingView) findViewById(R.id.trading_layout);
+        mEffectsView = (EffectsView) findViewById(R.id.effects_view);
+        mGameSummaryView = (GameSummaryView) findViewById(R.id.game_summary);
+        mTestView = findViewById(R.id.test);
+
         mCurrentPriceView = (TextView) findViewById(R.id.current_price);
         mCurrentMoneyView = (TextView) findViewById(R.id.current_money);
         mRatingView = (TextView) findViewById(R.id.rating);
@@ -100,7 +110,12 @@ public class TradingActivity extends Activity {
         mPowerupsView = (RecyclerView) findViewById(R.id.powerups);
         View graph = findViewById(R.id.graph);
 
-        // graph.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        // Hook up listener.
+        mTradingView.setListener(this);
+
+        // Set up larger views.
+        mEffectsView.setAnchorParent(mTradingView);
+        mGameSummaryView.setVisibility(View.INVISIBLE);
 
         // Update high score.
         mHighScore = getPreferences(MODE_PRIVATE).getFloat("highscore", 0);
@@ -149,6 +164,7 @@ public class TradingActivity extends Activity {
 
     public void onBuy(View view) {
         if (mCurrentGame.maybeBuy(mStockData)) {
+            mEffectsView.spawnFloatingMoney(mStockData.getLatest().price, mCurrentMoneyView);
             updateViews();
         }
     }
@@ -207,6 +223,16 @@ public class TradingActivity extends Activity {
         }
     }
 
+    @Override
+    public void onOverscroll(int distance) {
+        mTestView.setTranslationY(distance);
+    }
+
+    @Override
+    public void onOverscrollFinished() {
+        mTestView.animate().translationY(0);
+    }
+
     class GameControllerListener implements GameController.Listener {
 
         @Override
@@ -219,12 +245,7 @@ public class TradingActivity extends Activity {
             mSellButton.setEnabled(false);
             mBuyButton.setEnabled(false);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                mContainer.getOverlay().add(mCurrentMoneyView);
-                mContainer.animate().alpha(0.5f);
-            }
-
-            mCurrentMoneyView.animate().scaleX(2f).scaleY(2f);
+            mGameSummaryView.animateIn();
 
             // Commit highscore.
             if (mCurrentGame.getCurrentMoney() > mHighScore) {
@@ -240,7 +261,8 @@ public class TradingActivity extends Activity {
         public void onGameTick() {
             // Generate random price.
             float price = mStockData.getLatest().price;
-            float delta = ((float) Math.random() - 0.5f) * Math.min(0.5f * price, (float) (Math.pow(Math.random(), 5f) * 80f) + 15f);
+            float delta = ((float) Math.random() - 0.5f)
+                    * Math.min(0.5f * price, (float) (Math.pow(Math.random(), 5f) * 80f) + 15f);
             price += delta;
             mStockData.pushPrice(mController.getCurrentGameTime(), price);
 
@@ -260,7 +282,7 @@ public class TradingActivity extends Activity {
             mCurrentPriceView.setText(Format.monetary(price));
 
             // Update portfolio view.
-            float portfolioValue = mCurrentGame.getPortfolioValue(mStockData);
+            float portfolioValue = mCurrentGame.getPortfolioValue();
             mPortfolioValueView.setText(Format.monetary(portfolioValue));
         }
 
