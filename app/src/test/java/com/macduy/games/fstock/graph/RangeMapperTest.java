@@ -1,20 +1,20 @@
 package com.macduy.games.fstock.graph;
 
-import com.macduy.games.fstock.FstockTestRunner;
+import com.macduy.games.fstock.BuildConfig;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-@RunWith(FstockTestRunner.class)
-@Config(emulateSdk = 18)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class RangeMapperTest {
     private static final float DELTA = 0.00001f;
     @Mock Range mSource;
