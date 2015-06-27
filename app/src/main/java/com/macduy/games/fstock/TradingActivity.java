@@ -2,6 +2,7 @@ package com.macduy.games.fstock;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,9 @@ public class TradingActivity extends Activity implements TradingView.OverscrollL
     private final MinimumSpanRange mRange;
     private final FixedRange mTimeRange;
 
+    /** Pixels to overscroll to buy/sell. */
+    private int mOverscrollPurchaseThreshold;
+
     private TradingView mTradingView;
     private EffectsView mEffectsView;
     private GameSummaryView mGameSummaryView;
@@ -56,6 +60,8 @@ public class TradingActivity extends Activity implements TradingView.OverscrollL
     private PowerupRecyclerViewController mPowerupViewController;
 
     private GameState mCurrentGame;
+    private int mOverscrollDistance;
+
     private float mHighScore;
 
     private Powerup.Applicator mPowerupApplicator = new Powerup.Applicator() {
@@ -69,7 +75,6 @@ public class TradingActivity extends Activity implements TradingView.OverscrollL
             return mStockData;
         }
     };
-
     private PowerupRecyclerViewController.Listener mPowerupSelectedListener = new
             PowerupRecyclerViewController.Listener() {
                 @Override
@@ -88,6 +93,9 @@ public class TradingActivity extends Activity implements TradingView.OverscrollL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Resources r = getResources();
+        mOverscrollPurchaseThreshold = r.getDimensionPixelSize(R.dimen.drag_to_purchase);
+
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_trading);
@@ -225,12 +233,23 @@ public class TradingActivity extends Activity implements TradingView.OverscrollL
 
     @Override
     public void onOverscroll(int distance) {
+        mOverscrollDistance = distance;
+        boolean far_enough = Math.abs(distance) > mOverscrollPurchaseThreshold;
         mTestView.setTranslationY(distance);
+        mTestView.setBackgroundColor(far_enough ? Color.GREEN : Color.RED);
     }
 
     @Override
     public void onOverscrollFinished() {
+        if (mOverscrollDistance > mOverscrollPurchaseThreshold) {
+            mCurrentGame.maybeBuy(mStockData);
+            updateViews();
+        } else if (mOverscrollDistance < -mOverscrollPurchaseThreshold) {
+            mCurrentGame.maybeSell(mStockData);
+            updateViews();
+        }
         mTestView.animate().translationY(0);
+        mOverscrollDistance = 0;
     }
 
     class GameControllerListener implements GameController.Listener {

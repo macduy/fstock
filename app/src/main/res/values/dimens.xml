@@ -10,4 +10,6 @@
     <dimen name="gridline_thickness">0.75dp</dimen>
     <dimen name="gridline_label_font_size">8dp</dimen>
     <dimen name="gridline_label_offset">3dp</dimen>
+
+    <dimen name="drag_to_purchase">60dp</dimen>
 </resources>
