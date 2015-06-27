@@ -1,46 +1,59 @@
 package com.macduy.games.fstock;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayout;
-import android.view.Gravity;
-import android.view.ViewGroup;
+import android.view.View;
+import android.widget.TextView;
 
 import com.macduy.games.fstock.dependency.DaggerFStockComponent;
 import com.macduy.games.fstock.dependency.FStockComponent;
+import com.macduy.games.fstock.money.Account;
 import com.macduy.games.fstock.multitrading.MultiTradingController;
+import com.macduy.games.fstock.ui.Format;
 import com.macduy.games.fstock.view.MiniStockView;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import static android.view.ViewGroup.*;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class MultiTradingActivity extends Activity implements MultiTradingController.Listener {
 
     private final Map<StockData, MiniStockView> mStockToView = new IdentityHashMap<>();
     private FStockComponent mFStockComponent;
     private MultiTradingController mController;
-    private GridLayout mStocksGrid;
+    private Account mAccount;
+
+    @InjectView(R.id.stocks_grid) GridLayout mStocksGrid;
+    @InjectView(R.id.cash) TextView mCashView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_trading);
-
-        mStocksGrid = (GridLayout) findViewById(R.id.stocks_grid);
+        ButterKnife.inject(this);
 
         mFStockComponent = DaggerFStockComponent.create();
+        mAccount = mFStockComponent.account();
+        mAccount.deposit(2000);
+
         mController = mFStockComponent.multiTradingController();
         mController.setListener(this);
 
-        // Instantiate views and set up mapping to each stock.
         mStockToView.clear();
-        for (StockData stock : mController.stocks()) {
+        for (final StockData stock : mController.stocks()) {
+            // Instantiate views and set up mapping to each stock.
             // Use inflation with StocksGrid, otherwise the layout params specified in the xml are ignored.
             MiniStockView view = (MiniStockView)
                     getLayoutInflater().inflate(R.layout.mini_stock_view_internal, mStocksGrid, false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onStockClicked(stock);
+                }
+            });
             mStocksGrid.addView(view);
             mStockToView.put(stock, view);
         }
@@ -58,5 +71,11 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
         for (StockData stock : mController.stocks()) {
             mStockToView.get(stock).update(stock);
         }
+
+        mCashView.setText(Format.monetary(mAccount.getAmount()));
+    }
+
+    void onStockClicked(StockData stockData) {
+        mController.buy(stockData);
     }
 }

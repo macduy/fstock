@@ -4,15 +4,14 @@ import android.animation.TimeAnimator;
 
 import com.macduy.games.fstock.Clock;
 import com.macduy.games.fstock.StockData;
+import com.macduy.games.fstock.money.Account;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.inject.Inject;
 
-import static android.animation.TimeAnimator.*;
+import static android.animation.TimeAnimator.TimeListener;
 
 /**
  * Game Controller for Multi-trading game
@@ -21,14 +20,16 @@ public class MultiTradingController {
     private final TimeAnimator mGameTick;
     private final List<StockData> mStocks = new LinkedList<>();
     private final Clock mClock;
+    private final Account mAccount;
 
     private Listener mListener;
     private long mGameStart;
 
     @Inject
-    MultiTradingController(Clock clock) {
+    MultiTradingController(Clock clock, Account account) {
         mGameTick = new TimeAnimator();
         mClock = clock;
+        mAccount = account;
 
         // Generate stocks
         for (int i = 0; i < 10; i++) {
@@ -71,6 +72,10 @@ public class MultiTradingController {
             stockData.pushPrice(mGameStart, 100);
         }
         mGameTick.start();
+    }
+
+    public void buy(StockData stockData) {
+        mAccount.withdraw(stockData.getLatest().price);
     }
 
     public interface Listener {

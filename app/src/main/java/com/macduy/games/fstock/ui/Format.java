@@ -4,8 +4,12 @@ package com.macduy.games.fstock.ui;
  * Convenience class for formatting stuff.
  */
 public class Format {
-    public static String monetary(float value) {
+    public static String monetary(double value) {
         return String.format("%.2f", value);
+    }
+
+    public static String monetary(float value) {
+        return monetary((double) value);
     }
 
     /** Format time as MM:SS */
