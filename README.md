@@ -8,3 +8,4 @@ To create a test configuration in Android Studio:
 2. Search for test in: single module
 3. Working directory : .../app
 4. Use classpath of: app
+5. Set up custom runner: http://www.bignerdranch.com/blog/all-in-together-android-studio-gradle-and-robolectric/
