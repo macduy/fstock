@@ -29,4 +29,9 @@ public class FixedRange implements Range {
     public float end() {
         return mStart + mSpan;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%.1f, %.1f (+%.1f)]", mStart, mStart + mSpan, mSpan);
+    }
 }

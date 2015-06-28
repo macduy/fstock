@@ -1,21 +1,40 @@
 package com.macduy.games.fstock.view;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.macduy.games.fstock.R;
 import com.macduy.games.fstock.StockData;
+import com.macduy.games.fstock.StockPriceChartDrawable;
+import com.macduy.games.fstock.graph.FixedRange;
+import com.macduy.games.fstock.graph.SimpleRange;
 import com.macduy.games.fstock.ui.Format;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * A view that represents concisely a single stock in the multi-trading game.
  */
 public class MiniStockView extends RelativeLayout {
-    private TextView mTextPrice;
+    @InjectView(R.id.text_price) TextView mTextPrice;
+    @InjectView(R.id.progressBar1) ProgressBar mProgressBar;
+    @InjectView(R.id.graph) View mGraphView;
+
+    private StockData mStockData;
+    private FixedRange mTimeRange = new FixedRange(3000);
+
+    private ValueAnimator mBackgroundAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), Color.TRANSPARENT);
+    @ColorInt private int mCurrentBackgroundColor = Color.TRANSPARENT;
+    @ColorInt private int mDestinationColor = 0;
 
     public MiniStockView(Context context) {
         this(context, null);
@@ -27,15 +46,52 @@ public class MiniStockView extends RelativeLayout {
 
     public MiniStockView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        mBackgroundAnimator.setDuration(200);
+        mBackgroundAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mCurrentBackgroundColor = (int) animation.getAnimatedValue();
+                setBackgroundColor(mCurrentBackgroundColor);
+            }
+        });
     }
 
     @Override
     protected void onFinishInflate() {
-        mTextPrice = (TextView) findViewById(R.id.text_price);
+        super.onFinishInflate();
+        ButterKnife.inject(this);
+        mProgressBar.setMax(200);
     }
 
     public void update(StockData stock) {
+        if (mStockData != stock) {
+            mStockData = stock;
+
+            // Refresh chart drawable
+            mGraphView.setBackground(
+                    new StockPriceChartDrawable(
+                            getResources(),
+                            mStockData,
+                            new SimpleRange(0, 200),
+                            mTimeRange));
+        }
+
+        mTimeRange.setEnd(stock.getLatest().time);
+        mGraphView.invalidate();
+
         mTextPrice.setText(Format.monetary(stock.getLatest().price));
+        mProgressBar.setProgress((int) stock.getLatest().price);
     }
 
+    public void animateBackgroundTo(@ColorInt int color) {
+        if (mDestinationColor == color) {
+            return;
+        }
+
+        mDestinationColor = color;
+        mBackgroundAnimator.cancel();
+        mBackgroundAnimator.setObjectValues(mCurrentBackgroundColor, color);
+        mBackgroundAnimator.start();
+    }
 }

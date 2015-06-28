@@ -1,5 +1,7 @@
 package com.macduy.games.fstock;
 
+import com.macduy.games.fstock.money.Holding;
+
 import java.util.LinkedList;
 import java.util.List;
 

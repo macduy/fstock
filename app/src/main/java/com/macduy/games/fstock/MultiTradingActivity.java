@@ -1,6 +1,7 @@
 package com.macduy.games.fstock;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayout;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.macduy.games.fstock.dependency.DaggerFStockComponent;
 import com.macduy.games.fstock.dependency.FStockComponent;
 import com.macduy.games.fstock.money.Account;
+import com.macduy.games.fstock.money.Holding;
 import com.macduy.games.fstock.multitrading.MultiTradingController;
 import com.macduy.games.fstock.ui.Format;
 import com.macduy.games.fstock.view.MiniStockView;
@@ -47,7 +49,7 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
             // Instantiate views and set up mapping to each stock.
             // Use inflation with StocksGrid, otherwise the layout params specified in the xml are ignored.
             MiniStockView view = (MiniStockView)
-                    getLayoutInflater().inflate(R.layout.mini_stock_view_internal, mStocksGrid, false);
+                    getLayoutInflater().inflate(R.layout.mini_stock_view_layout, mStocksGrid, false);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -69,13 +71,35 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
     public void onGameUpdate() {
         // Update all views
         for (StockData stock : mController.stocks()) {
-            mStockToView.get(stock).update(stock);
+            MiniStockView view = mStockToView.get(stock);
+
+            view.update(stock);
+
+            Holding holding = mController.getHolding(stock);
+            if (holding != null) {
+                if (stock.getLatest().price > holding.getPurchasePrice()) {
+                    // In the green
+                    view.animateBackgroundTo(getResources().getColor(R.color.trading_green));
+                } else {
+                    // In the red
+                    view.animateBackgroundTo(getResources().getColor(R.color.trading_red));
+                }
+
+            } else {
+                // Not purchased
+                view.animateBackgroundTo(Color.TRANSPARENT);
+            }
+
         }
 
         mCashView.setText(Format.monetary(mAccount.getAmount()));
     }
 
     void onStockClicked(StockData stockData) {
-        mController.buy(stockData);
+        if (mController.getHolding(stockData) == null) {
+            mController.buy(stockData);
+        } else {
+            mController.sell(stockData);
+        }
     }
 }

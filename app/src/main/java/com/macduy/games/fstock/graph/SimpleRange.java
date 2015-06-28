@@ -26,4 +26,9 @@ public class SimpleRange implements Range {
     public float end() {
         return mEnd;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%.1f, %.1f]", mStart, mEnd);
+    }
 }

@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
+import com.macduy.games.fstock.money.Holding;
+
 import java.util.List;
 
 /**

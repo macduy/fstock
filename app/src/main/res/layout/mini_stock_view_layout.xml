@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- To be used by MiniStockView for its internal structure -->
+<com.macduy.games.fstock.view.MiniStockView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:grid="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="0dp"
+    grid:layout_gravity="fill_horizontal"
+    grid:layout_columnWeight="1"
+    android:padding="16dp"
+    tools:context=".MultiTradingActivity">
+
+    <View
+        android:id="@+id/graph"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progressBar1"
+        android:layout_below="@id/graph"
+        android:indeterminate="false"
+        android:progress="10"
+        android:max="200"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/text_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressBar1"
+        android:layout_centerHorizontal="true"
+        android:text="£100"/>
+</com.macduy.games.fstock.view.MiniStockView>

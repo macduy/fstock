@@ -119,7 +119,6 @@ public class StockPriceChartDrawable extends Drawable {
         for (StockData.Price price : mStockData) {
             x = mXMapper.get(price.time);
             y = mYMapper.get(price.price);
-
             if (i == 0) {
                 mPath.moveTo(b.left, y);
                 mShadePath.lineTo(b.left, y);

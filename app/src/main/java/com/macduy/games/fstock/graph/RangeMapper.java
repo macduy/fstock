@@ -25,4 +25,9 @@ public class RangeMapper {
         f = mInterpolator.getInterpolation(f);
         return (mDestination.end() - mDestination.start()) * f + mDestination.start();
     }
+
+    @Override
+    public String toString() {
+        return String.format("RangeMapper: %s -> %s", mSource.toString(), mDestination.toString());
+    }
 }
