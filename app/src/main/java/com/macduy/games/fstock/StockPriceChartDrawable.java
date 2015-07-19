@@ -17,6 +17,9 @@ public class StockPriceChartDrawable extends Drawable {
     // TODO: Unharcode these.
     private static final int GRIDLINE_SPACING = 50;
 
+    // Chart options.
+    public boolean drawVerticalGridlines;
+
     // Data range.
     private final Range mYRange;
     private final Range mXRange;
@@ -132,7 +135,9 @@ public class StockPriceChartDrawable extends Drawable {
         mShadePath.lineTo(b.right, y);
         mShadePath.lineTo(b.right, b.bottom);
 
-        drawGridlines(canvas);
+        if (drawVerticalGridlines) {
+            drawGridlines(canvas);
+        }
 
         // Draw shadow first.
         canvas.translate(0, mShadowOffset);

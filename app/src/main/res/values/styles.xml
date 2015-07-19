@@ -16,6 +16,10 @@
 
     <!-- *** TEXT STYLES *** -->
 
+    <style name="Basic">
+        <item name="fontPath">fonts/code_bold.otf</item>
+    </style>
+
     <style name="BoldText">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">30sp</item>

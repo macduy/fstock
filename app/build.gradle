@@ -36,4 +36,5 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
     compile 'com.android.support:gridlayout-v7:22.2.0'
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
 }

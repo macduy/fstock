@@ -1,6 +1,7 @@
 package com.macduy.games.fstock;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayout;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MultiTradingActivity extends Activity implements MultiTradingController.Listener {
 
@@ -30,6 +32,11 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
 
     @InjectView(R.id.stocks_grid) GridLayout mStocksGrid;
     @InjectView(R.id.cash) TextView mCashView;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
