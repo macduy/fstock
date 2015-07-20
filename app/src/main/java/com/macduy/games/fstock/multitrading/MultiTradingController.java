@@ -7,6 +7,7 @@ import com.macduy.games.fstock.Clock;
 import com.macduy.games.fstock.StockData;
 import com.macduy.games.fstock.money.Account;
 import com.macduy.games.fstock.money.Holding;
+import com.macduy.games.fstock.stock.NameGenerator;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,27 +19,36 @@ import javax.inject.Inject;
 import static android.animation.TimeAnimator.TimeListener;
 
 /**
- * Game Controller for Multi-trading game
+ * Game Controller for Multi-trading game.
  */
 public class MultiTradingController {
+    private static final String TAG = "MultiTradingCtrl";
+
+    private static final long GAME_DURATION_MS = 60 * 1000;
+
     private final TimeAnimator mGameTick;
     private final List<StockData> mStocks = new LinkedList<>();
     private final Map<StockData, Holding> mHoldings = new HashMap<>();
     private final Clock mClock;
     private final Account mAccount;
+    private final NameGenerator mNameGenerator;
 
+    private State mState = State.STOPPED;
     private Listener mListener;
     private long mGameStart;
 
     @Inject
-    MultiTradingController(Clock clock, Account account) {
+    MultiTradingController(Clock clock, Account account, NameGenerator nameGenerator) {
         mGameTick = new TimeAnimator();
         mClock = clock;
         mAccount = account;
+        mNameGenerator = nameGenerator;
 
         // Generate stocks
         for (int i = 0; i < 9; i++) {
-            mStocks.add(new StockData());
+            StockData stockData = new StockData();
+            stockData.setName(mNameGenerator.generateStockSymbol());
+            mStocks.add(stockData);
         }
 
         mGameTick.setTimeListener(new TimeListener() {
@@ -68,9 +78,20 @@ public class MultiTradingController {
         }
 
         mListener.onGameUpdate();
+
+        if (getTimeLeft() < 0) {
+            stop();
+        }
+    }
+
+    private void stop() {
+        mState = State.STOPPED;
+        mGameTick.end();
+        mListener.onGameEnd();
     }
 
     public void start() {
+        mState = State.RUNNING;
         mGameStart = mClock.getTime();
         // Generate initial price for all stocks.
         for (StockData stockData : mStocks) {
@@ -79,6 +100,20 @@ public class MultiTradingController {
         mGameTick.start();
     }
 
+    public long getElapsedTime() {
+        return mClock.getTime() - mGameStart;
+    }
+
+    public long getTimeLeft() {
+        return GAME_DURATION_MS - getElapsedTime();
+    }
+
+    @Nullable
+    public Holding getHolding(StockData stock) {
+        return mHoldings.get(stock);
+    }
+
+    // Following methods require the game to be running.
     public void buy(StockData stockData) {
         // Each stock can only be purchased once.
         double purchasePrice = stockData.getLatest().price;
@@ -91,12 +126,13 @@ public class MultiTradingController {
         mAccount.deposit(stockData.getLatest().price);
     }
 
-    @Nullable
-    public Holding getHolding(StockData stock) {
-        return mHoldings.get(stock);
-    }
-
     public interface Listener {
         void onGameUpdate();
+        void onGameEnd();
+    }
+
+    private enum State {
+        RUNNING,
+        STOPPED
     }
 }

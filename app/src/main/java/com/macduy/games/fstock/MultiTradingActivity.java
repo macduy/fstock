@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayout;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.macduy.games.fstock.dependency.DaggerFStockComponent;
@@ -23,8 +24,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+/**
+ * Activity to host the multi-trading game.
+ */
 public class MultiTradingActivity extends Activity implements MultiTradingController.Listener {
-
+    private static final String TAG = "MultiTradingActv";
     private final Map<StockData, MiniStockView> mStockToView = new IdentityHashMap<>();
     private FStockComponent mFStockComponent;
     private MultiTradingController mController;
@@ -32,6 +36,7 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
 
     @InjectView(R.id.stocks_grid) GridLayout mStocksGrid;
     @InjectView(R.id.cash) TextView mCashView;
+    @InjectView(R.id.timer) TextView mTimerView;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -41,6 +46,7 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_multi_trading);
         ButterKnife.inject(this);
 
@@ -100,6 +106,13 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
         }
 
         mCashView.setText(Format.monetary(mAccount.getAmount()));
+
+        mTimerView.setText(Format.minuteSeconds(mController.getTimeLeft()));
+    }
+
+    @Override
+    public void onGameEnd() {
+
     }
 
     void onStockClicked(StockData stockData) {

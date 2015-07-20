@@ -10,10 +10,20 @@ public class StockData implements Iterable<StockData.Price> {
 
     private Price[] mData = new Price[MAX];
     private int mPointer = 0;
+    // TODO: Move this to Stock.
+    private String mName;
 
     public void pushPrice(long time, float price) {
         mData[mPointer % MAX] = new Price(time, price);
         mPointer++;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getName() {
+        return mName;
     }
 
     @Nullable public Price getLatest() {

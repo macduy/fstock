@@ -7,8 +7,7 @@ import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.macduy.games.fstock.R;
@@ -24,10 +23,10 @@ import butterknife.InjectView;
 /**
  * A view that represents concisely a single stock in the multi-trading game.
  */
-public class MiniStockView extends RelativeLayout {
+public class MiniStockView extends FrameLayout {
     @InjectView(R.id.text_price) TextView mTextPrice;
-    @InjectView(R.id.progressBar1) ProgressBar mProgressBar;
     @InjectView(R.id.graph) View mGraphView;
+    @InjectView(R.id.name) TextView mTextName;
 
     private StockData mStockData;
     private FixedRange mTimeRange = new FixedRange(3000);
@@ -61,7 +60,6 @@ public class MiniStockView extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        mProgressBar.setMax(200);
     }
 
     public void update(StockData stock) {
@@ -75,13 +73,15 @@ public class MiniStockView extends RelativeLayout {
                             mStockData,
                             new SimpleRange(0, 200),
                             mTimeRange));
+
+            // Update name shown.
+            mTextName.setText(mStockData.getName());
         }
 
         mTimeRange.setEnd(stock.getLatest().time);
         mGraphView.invalidate();
 
         mTextPrice.setText(Format.monetary(stock.getLatest().price));
-        mProgressBar.setProgress((int) stock.getLatest().price);
     }
 
     public void animateBackgroundTo(@ColorInt int color) {

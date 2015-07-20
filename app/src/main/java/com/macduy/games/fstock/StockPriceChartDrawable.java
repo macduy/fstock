@@ -2,6 +2,7 @@ package com.macduy.games.fstock;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
@@ -19,6 +20,7 @@ public class StockPriceChartDrawable extends Drawable {
 
     // Chart options.
     public boolean drawVerticalGridlines;
+    public boolean drawShadow;
 
     // Data range.
     private final Range mYRange;
@@ -41,6 +43,7 @@ public class StockPriceChartDrawable extends Drawable {
     private Paint mFillPaint = new Paint();
     private Paint mGridlinePaint = new Paint();
     private Paint mGridlineLabelPaint = new Paint();
+    private Paint mBackgroundPaint = new Paint();
 
     private Path mPath = new Path();
     private Path mShadePath = new Path();
@@ -74,12 +77,14 @@ public class StockPriceChartDrawable extends Drawable {
         mGridlinePaint.setColor(res.getColor(R.color.gridline));
         mGridlinePaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.gridline_thickness));
         mGridlinePaint.setStyle(Paint.Style.STROKE);
-        mGridlinePaint.setPathEffect(new DashPathEffect(new float[] { 20, 10 }, 0));
+        mGridlinePaint.setPathEffect(new DashPathEffect(new float[]{20, 10}, 0));
 
         mGridlineLabelPaint.setAntiAlias(true);
         mGridlineLabelPaint.setColor(res.getColor(R.color.gridline));
         mGridlineLabelPaint.setTextSize(res.getDimension(R.dimen.gridline_label_font_size));
         mGridlineLabelPaint.setTextAlign(Paint.Align.LEFT);
+
+        mBackgroundPaint.setColor(Color.rgb(240, 240, 240));
 
         mYRange = yRange;
         // TODO: Make this based on time.
@@ -112,6 +117,10 @@ public class StockPriceChartDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
         Rect b = mDrawBounds;
+
+        // Draw background.
+        canvas.drawRect(getBounds(), mBackgroundPaint);
+
         mPath.reset();
         mShadePath.reset();
 
@@ -140,9 +149,11 @@ public class StockPriceChartDrawable extends Drawable {
         }
 
         // Draw shadow first.
-        canvas.translate(0, mShadowOffset);
-        canvas.drawPath(mPath, mShadowPaint);
-        canvas.translate(0, -mShadowOffset);
+        if (drawShadow) {
+            canvas.translate(0, mShadowOffset);
+            canvas.drawPath(mPath, mShadowPaint);
+            canvas.translate(0, -mShadowOffset);
+        }
 
         // Draw the path and shade.
         mLinePaint.setStyle(Paint.Style.STROKE);

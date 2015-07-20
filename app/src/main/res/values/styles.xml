@@ -17,11 +17,15 @@
     <!-- *** TEXT STYLES *** -->
 
     <style name="Basic">
-        <item name="fontPath">fonts/code_bold.otf</item>
+        <item name="fontPath">fonts/questrial.ttf</item>
     </style>
 
-    <style name="BoldText">
-        <item name="android:fontFamily">sans-serif</item>
+    <style name="LargeTimer" parent="Basic">
+        <item name="android:textSize">80dp</item>
+        <item name="fontPath">fonts/yantramanav-thin.ttf</item>
+    </style>
+
+    <style name="BoldText" parent="Basic">
         <item name="android:textSize">30sp</item>
         <item name="android:textStyle">bold</item>
     </style>
