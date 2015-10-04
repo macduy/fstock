@@ -18,15 +18,15 @@ import com.macduy.games.fstock.graph.SimpleRange;
 import com.macduy.games.fstock.ui.Format;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 /**
  * A view that represents concisely a single stock in the multi-trading game.
  */
 public class MiniStockView extends FrameLayout {
-    @InjectView(R.id.text_price) TextView mTextPrice;
-    @InjectView(R.id.graph) View mGraphView;
-    @InjectView(R.id.name) TextView mTextName;
+    @Bind(R.id.text_price) TextView mTextPrice;
+    @Bind(R.id.graph) View mGraphView;
+    @Bind(R.id.name) TextView mTextName;
 
     private StockData mStockData;
     private FixedRange mTimeRange = new FixedRange(3000);
@@ -59,7 +59,7 @@ public class MiniStockView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     public void update(StockData stock) {

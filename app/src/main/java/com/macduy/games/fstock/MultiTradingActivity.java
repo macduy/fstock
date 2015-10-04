@@ -21,7 +21,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -34,9 +34,9 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
     private MultiTradingController mController;
     private Account mAccount;
 
-    @InjectView(R.id.stocks_grid) GridLayout mStocksGrid;
-    @InjectView(R.id.cash) TextView mCashView;
-    @InjectView(R.id.timer) TextView mTimerView;
+    @Bind(R.id.stocks_grid) GridLayout mStocksGrid;
+    @Bind(R.id.cash) TextView mCashView;
+    @Bind(R.id.timer) TextView mTimerView;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -48,7 +48,7 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_multi_trading);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         mFStockComponent = DaggerFStockComponent.create();
         mAccount = mFStockComponent.account();
