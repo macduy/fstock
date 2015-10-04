@@ -97,11 +97,16 @@ public class MiniStockView extends FrameLayout {
             // Hide the progress bar.
             if (mProgressBar.getVisibility() == VISIBLE) {
                 mProgressBar.setVisibility(GONE);
+                animate().cancel();
+                animate().scaleX(1f).scaleY(1f).rotationX(0f);
             }
+
         } else {
             // Show the progress bar and then update it
             if (mProgressBar.getVisibility() != VISIBLE) {
                 mProgressBar.setVisibility(VISIBLE);
+                animate().cancel();
+                animate().scaleX(0.9f).scaleY(0.9f).rotationX(10f);
             }
 
             mProgressBar.setProgress((int) (transaction.getProgress() * MAX_PROGRESS));
