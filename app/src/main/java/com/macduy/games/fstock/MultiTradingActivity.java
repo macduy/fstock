@@ -103,6 +103,7 @@ public class MultiTradingActivity extends Activity implements MultiTradingContro
                 view.animateBackgroundTo(Color.TRANSPARENT);
             }
 
+            view.update(mController.getTransaction(stock));
         }
 
         mCashView.setText(Format.monetary(mAccount.getAmount()));

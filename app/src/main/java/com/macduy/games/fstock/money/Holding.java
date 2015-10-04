@@ -3,7 +3,7 @@ package com.macduy.games.fstock.money;
 import com.macduy.games.fstock.StockData;
 
 /**
- * Represents a purchased
+ * Represents a purchased stock.
  */
 public class Holding {
     public final StockData stock;
